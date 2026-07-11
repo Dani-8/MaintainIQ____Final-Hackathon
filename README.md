@@ -6,6 +6,6 @@ Due to internet connectivity issues during the hackathon, I experienced signific
 
 As a result, this repository does **not** represent the final version of the project yet.
 
-**The next commit to this repository will contain the completed and finalized version of the application.**
+**I still plan to complete this project after the event as a personal learning exercise and portfolio project.**
 
 Thank you for your patience and understanding.
