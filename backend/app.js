@@ -1,14 +1,17 @@
-require("dotenv").config();
+import dns from "dns";
 
-const express = require("express");
-const mongoose = require("mongoose");
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
+import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+import mongoose from "mongoose";
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 
-// Connect to MongoDB
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -19,7 +22,6 @@ mongoose
     process.exit(1);
   });
 
-// Test Route
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -27,7 +29,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// Start Server
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
