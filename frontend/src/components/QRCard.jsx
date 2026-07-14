@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Copy, Download, ExternalLink, Check } from 'lucide-react';
+import React, { useState } from 'react'
+import { Copy, Download, ExternalLink, Check } from 'lucide-react'
+
 
 export function QRCard({ asset, id }) {
-    const [copied, setCopied] = useState(false);
-    if (!asset) return null;
+    const [copied, setCopied] = useState(false)
+    if (!asset) return null
 
-    const publicUrl = `${window.location.origin}/public/assets/${asset.publicUrlSlug}`;
+    const publicUrl = `${window.location.origin}/public/assets/${asset.publicUrlSlug}`
 
     const copyLink = async () => {
         try {
@@ -15,7 +16,7 @@ export function QRCard({ asset, id }) {
         } catch (err) {
             console.error('Failed to copy public URL:', err);
         }
-    };
+    }
 
     const downloadQR = async () => {
         try {
@@ -32,8 +33,10 @@ export function QRCard({ asset, id }) {
             document.body.removeChild(link);
             URL.revokeObjectURL(blobUrl);
         } catch (err) {
-            console.warn('Blob fetch failed, falling back to direct open:', err);
-            const link = document.createElement('a');
+            console.warn('Blob fetch failed, falling back to direct open:', err)
+
+            const link = document.createElement('a')
+
             link.href = asset.qrCodeUrl;
             link.target = '_blank';
             link.download = `QR-${asset.assetCode}.png`;
@@ -41,7 +44,7 @@ export function QRCard({ asset, id }) {
             link.click();
             document.body.removeChild(link);
         }
-    };
+    }
 
     return (
         <div id={id || 'qr-card-container'} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col items-center">
@@ -63,6 +66,7 @@ export function QRCard({ asset, id }) {
                     No QR generated
                 </div>
             )}
+
 
             <div className="w-full space-y-2">
                 <button
