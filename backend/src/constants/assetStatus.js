@@ -21,7 +21,9 @@ export const ASSET_STATUS_TRANSITIONS = {
 
 export function isValidAssetStatusTransition(current, next) {
     if (!current) return true; // Initial status creation
-    if (current === next) return true;
-    const allowed = ASSET_STATUS_TRANSITIONS[current] || [];
-    return allowed.includes(next);
+    if (current === next) return true
+
+    const allowed = ASSET_STATUS_TRANSITIONS[current] || []
+
+    return allowed.includes(next)
 }
