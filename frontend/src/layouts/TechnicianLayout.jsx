@@ -7,14 +7,14 @@ import { AlertTriangle, LogOut, Wrench, LayoutDashboard } from 'lucide-react'
 
 
 export function TechnicianLayout() {
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
+    const { user, logout } = useAuth()
+    const navigate = useNavigate()
+    const location = useLocation()
 
     const handleLogout = () => {
         logout()
         
-        navigate('/login');
+        navigate('/login')
     }
 
     const navItems = [
@@ -66,7 +66,7 @@ export function TechnicianLayout() {
                         <div className="w-9 h-9 rounded-lg bg-teal-600/20 text-teal-400 flex items-center justify-center font-display font-bold text-xs border border-teal-500/20 shadow-inner shrink-0">
                             {user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'TC'}
                         </div>
-                        
+
                         <div className="min-w-0 flex-1">
                             <p className="text-xs font-bold text-slate-200 truncate leading-snug">{user?.name || 'Technician Specialist'}</p>
                             <p className="text-[10px] text-teal-400 font-mono tracking-wider uppercase font-semibold mt-0.5 leading-none">Technician Desk</p>
