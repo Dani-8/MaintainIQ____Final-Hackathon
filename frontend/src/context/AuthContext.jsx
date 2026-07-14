@@ -11,33 +11,38 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         async function checkAuth() {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token')
+
             if (!token) {
                 setUser(null);
                 setLoading(false);
                 return;
             }
+
             try {
                 const u = await authService.getMe();
-                setUser(u);
+                setUser(u)
             } catch (err) {
                 console.warn('Authentication check failed:', err.message);
                 localStorage.removeItem('token');
-                setUser(null);
+                setUser(null)
             } finally {
                 setLoading(false);
             }
         }
+
         checkAuth();
     }, []);
 
 
     const login = async (email, password) => {
-        setLoading(true);
+        setLoading(true)
+
         try {
             const data = await authService.login(email, password);
-            setUser(data.user);
-            return data.user;
+            setUser(data.user)
+
+            return data.user
         } catch (err) {
             setUser(null);
             throw err;
@@ -48,10 +53,12 @@ export function AuthProvider({ children }) {
 
 
     const register = async (name, email, password, role, specialty) => {
-        setLoading(true);
+        setLoading(true)
+
         try {
             const data = await authService.register(name, email, password, role, specialty);
-            setUser(data.user);
+            setUser(data.user)
+
             return data.user;
         } catch (err) {
             setUser(null);
@@ -63,8 +70,8 @@ export function AuthProvider({ children }) {
 
 
     const logout = () => {
-        authService.logout();
-        setUser(null);
+        authService.logout()
+        setUser(null)
     };
 
 
@@ -77,8 +84,7 @@ export function AuthProvider({ children }) {
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin',
         isTechnician: user?.role === 'technician'
-    };
-
+    }
 
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -88,7 +94,7 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
     const context = useContext(AuthContext)
-    
+
     if (!context) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
