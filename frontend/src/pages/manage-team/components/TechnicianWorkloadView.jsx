@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import { Calendar, User, Wrench, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Briefcase } from 'lucide-react';
 
 export function TechnicianWorkloadView({ users, issues }) {
-    const [expandedTechId, setExpandedTechId] = useState(null);
+    const [expandedTechIds, setExpandedTechIds] = useState({});
 
     const technicians = users.filter(u => u.role === 'technician');
 
     const toggleExpand = (techId) => {
-        setExpandedTechId(prev => (prev === techId ? null : techId));
+        setExpandedTechIds(prev => ({
+            ...prev,
+            [techId]: !prev[techId]
+        }));
     };
+
 
     const getPriorityColor = (priority) => {
         switch (priority?.toLowerCase()) {
@@ -36,9 +40,10 @@ export function TechnicianWorkloadView({ users, issues }) {
                     No technicians registered to calculate workload.
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
                     {technicians.map((tech) => {
                         const techId = tech._id || tech.id;
+
                         const techIssues = issues.filter(issue => {
                             const assignedId = issue.assignedTechnician?._id || issue.assignedTechnician?.id || issue.assignedTechnician;
                             return String(assignedId) === String(techId);
@@ -51,6 +56,7 @@ export function TechnicianWorkloadView({ users, issues }) {
                         const loadCount = activeIssues.length;
                         let intensityText = '🟢 Idle - Ready';
                         let intensityClass = 'bg-emerald-50 text-emerald-800 border-emerald-200/60';
+
                         if (loadCount > 0 && loadCount <= 2) {
                             intensityText = '🟡 Moderate - Active';
                             intensityClass = 'bg-amber-50 text-amber-800 border-amber-200/60';
@@ -59,7 +65,7 @@ export function TechnicianWorkloadView({ users, issues }) {
                             intensityClass = 'bg-rose-50 text-rose-800 border-rose-200/60';
                         }
 
-                        const isExpanded = expandedTechId === techId;
+                        const isExpanded = !!expandedTechIds[techId];
 
                         return (
                             <div key={techId} className="bg-white border border-slate-200/95 rounded-2xl shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between">
@@ -111,13 +117,14 @@ export function TechnicianWorkloadView({ users, issues }) {
                                             </button>
 
                                             {isExpanded && (
-                                                <div className="h-[200px] space-y-2 mt-3 animate-fade-in overflow-scroll">
+                                                <div className={`${activeIssues.length > 1 ? 'h-[200px] overflow-scroll' : ''} space-y-2 mt-3 animate-fade-in`}>
                                                     {activeIssues.map((issue ) => (
                                                         <div key={issue._id || issue.id} className="bg-white border border-slate-200/80 p-3 rounded-xl shadow-xs space-y-2">
                                                             <div className="flex items-start justify-between gap-2">
                                                                 <span className="font-mono text-[9px] font-bold text-slate-400">
                                                                     #{issue.issueNumber}
                                                                 </span>
+
                                                                 <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider uppercase ${getPriorityColor(issue.priority)}`}>
                                                                     {issue.priority}
                                                                 </span>
@@ -142,6 +149,7 @@ export function TechnicianWorkloadView({ users, issues }) {
                                             )}
                                         </div>
                                     )}
+                                    
 
                                     {activeIssues.length === 0 && (
                                         <div className="p-5 text-center">
