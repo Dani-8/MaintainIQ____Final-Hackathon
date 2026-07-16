@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { userService } from '../../../services/userService.js';
+import { issueService } from '../../../services/issueService.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 
 export function useManageTeam() {
     const { user: currentUser } = useAuth();
     const [users, setUsers] = useState([]);
+    const [issues, setIssues] = useState([]);
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(false);
     const [error, setError] = useState('');
@@ -19,14 +21,18 @@ export function useManageTeam() {
     const [specialty, setSpecialty] = useState('General Maintenance');
     const [password, setPassword] = useState('');
 
-
     const fetchUsers = async () => {
         try {
             setLoading(true);
             setError('');
-
             const data = await userService.getUsers();
             setUsers(data);
+            try {
+                const issuesData = await issueService.getAll();
+                setIssues(issuesData);
+            } catch (issueErr) {
+                console.error('Failed to load issues for workload calculation:', issueErr);
+            }
         } catch (err) {
             setError(err.message || 'Failed to fetch team members.');
         } finally {
@@ -34,20 +40,16 @@ export function useManageTeam() {
         }
     };
 
-
     useEffect(() => {
         fetchUsers();
     }, []);
 
-
     const generateSecurePassword = () => {
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*';
         let newPassword = '';
-
         for (let i = 0; i < 10; i++) {
             newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-
         setPassword(newPassword);
         setSuccess('Generated secure temporary password!');
     };
@@ -65,8 +67,7 @@ export function useManageTeam() {
 
         // Scroll to form smoothly
         setTimeout(() => {
-            const formEl = document.getElementById('team-form-container')
-
+            const formEl = document.getElementById('team-form-container');
             if (formEl) {
                 formEl.scrollIntoView({ behavior: 'smooth' });
             }
@@ -83,10 +84,8 @@ export function useManageTeam() {
         setShowForm(false);
     };
 
-
     const handleSubmitForm = async (e) => {
         e.preventDefault();
-
         if (!name.trim() || !email.trim() || (!editingUser && !password.trim()) || !role) {
             setError('Please fill out all required fields.');
             return;
@@ -140,24 +139,44 @@ export function useManageTeam() {
             setActionLoading(true);
             setError('');
             setSuccess('');
-
             await userService.deleteUser(id);
-            setSuccess(`${userName} was successfully removed.`)
-
+            setSuccess(`${userName} was successfully removed.`);
             await fetchUsers();
         } catch (err) {
             setError(err.message || 'Failed to remove team member.');
         } finally {
             setActionLoading(false);
         }
-    }
-
+    };
 
     return {
-        currentUser, users, loading, actionLoading, error, setError, success, setSuccess,
-        showForm, setShowForm, editingUser, setEditingUser, name, setName, email, setEmail,
-        role, setRole, specialty, setSpecialty, password, setPassword,
-        handleEditClick, handleSubmitForm, handleDeleteUser,
-        resetForm, generateSecurePassword 
+        currentUser,
+        users,
+        issues,
+        fetchUsers,
+        loading,
+        actionLoading,
+        error,
+        setError,
+        success,
+        setSuccess,
+        showForm,
+        setShowForm,
+        editingUser,
+        name,
+        setName,
+        email,
+        setEmail,
+        role,
+        setRole,
+        specialty,
+        setSpecialty,
+        password,
+        setPassword,
+        generateSecurePassword,
+        handleEditClick,
+        resetForm,
+        handleSubmitForm,
+        handleDeleteUser,
     };
 }
