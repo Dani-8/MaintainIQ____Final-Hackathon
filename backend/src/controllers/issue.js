@@ -351,3 +351,62 @@ export const getPublicIssueStatusByNumber = asyncHandler(async (req, res) => {
 
   return apiResponse.success(res, issue, 'Public issue status loaded successfully');
 });
+
+// PATCH /api/issues/:id/checks (Technician / Admin Auth)
+export const updateIssueChecks = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { completedChecks } = req.body;
+
+  if (!Array.isArray(completedChecks)) {
+    return apiResponse.error(res, 'completedChecks must be an array', 400);
+  }
+
+  let issue = null;
+  if (isMongoConnected()) {
+    issue = await Issue.findById(id);
+  } else {
+    issue = localDb.issues.findById(id);
+  }
+
+  if (!issue) {
+    return apiResponse.error(res, 'Issue not found', 404);
+  }
+
+  // Technician Authorization Check
+  const userIdStr = String(req.user._id || req.user.id);
+  if (req.user.role === 'technician' && (!issue.assignedTechnician || String(issue.assignedTechnician) !== userIdStr)) {
+    return apiResponse.error(res, 'Unauthorized. Technicians can only update issues assigned to them.', 403);
+  }
+
+  let updatedIssue = null;
+  if (isMongoConnected()) {
+    updatedIssue = await Issue.findByIdAndUpdate(id, { completedChecks }, { new: true })
+      .populate('asset')
+      .populate('assignedTechnician', 'name email');
+  } else {
+    updatedIssue = localDb.issues.findByIdAndUpdate(id, { completedChecks });
+    if (updatedIssue) {
+      const copy = { ...updatedIssue, completedChecks };
+      const a = localDb.assets.findById(updatedIssue.asset);
+      copy.asset = a ? { _id: a._id, name: a.name, assetCode: a.assetCode, location: a.location, status: a.status, condition: a.condition, category: a.category, publicUrlSlug: a.publicUrlSlug } : null;
+
+      if (updatedIssue.assignedTechnician) {
+        const u = localDb.users.findById(updatedIssue.assignedTechnician);
+        copy.assignedTechnician = u ? { _id: u._id, name: u.name, email: u.email, role: u.role } : null;
+      }
+      updatedIssue = copy;
+    }
+  }
+
+  // Create History Log
+  await createHistoryLog({
+    assetId: issue.asset,
+    issueId: issue._id,
+    actor: req.user.name,
+    actorRole: req.user.role,
+    action: 'Checks Updated',
+    description: `Technician updated safety checks checklist: ${completedChecks.length} completed.`
+  });
+
+  return apiResponse.success(res, updatedIssue, 'Safety checklist updated successfully');
+});

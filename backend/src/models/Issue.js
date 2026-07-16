@@ -19,6 +19,7 @@ const issueSchema = new mongoose.Schema({
         causes: [{ type: String }],
         checks: [{ type: String }]
     },
+    completedChecks: [{ type: String }],
     aiFieldsEdited: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
