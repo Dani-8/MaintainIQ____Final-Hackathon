@@ -22,6 +22,12 @@ export async function request(endpoint, options = {}) {
         const data = await response.json();
 
         if (!response.ok) {
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                if (typeof window !== 'undefined') {
+                    window.location.replace('/login');
+                }
+            }
             throw new Error(data.message || 'An error occurred during request execution.');
         }
 
@@ -51,6 +57,12 @@ export async function uploadRequest(endpoint, formData) {
         const data = await response.json()
 
         if (!response.ok) {
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                if (typeof window !== 'undefined') {
+                    window.location.replace('/login');
+                }
+            }
             throw new Error(data.message || 'Upload failed.');
         }
 
