@@ -22,7 +22,7 @@ Welcome to my final hackathon project! I battled through the darkest depths of i
 
 ## 🍰 What's inside this delicious tech cake?
 
-This project is a labor of love split into two main flavors. I packed it with modern tools to ensure it runs smooth like butter.
+This project is a labor of love split into frontend and backend. It uses modern tools to ensure it runs smoothly and is easy to extend.
 
 ### 🎨 Frontend
 - **React 19 & Vite**: Because waiting for builds is so last decade.
@@ -42,7 +42,7 @@ This project is a labor of love split into two main flavors. I packed it with mo
 
 ## 🛠️ Getting Started
 
-Don't want to wait for the live link? You can run it locally and pretend you're an elite hacker! 
+Prefer to try the live demo above? Great — otherwise, follow the instructions below to run the app locally on your machine.
 
 ### Prerequisites
 Make sure you have these installed:
