@@ -3,15 +3,38 @@ import { Users, Plus, Loader2, AlertCircle, CheckCircle, X } from 'lucide-react'
 import { useManageTeam } from './hooks/useManageTeam.js';
 import { TeamMemberForm } from './components/TeamMemberForm.jsx';
 import { TeamDirectoryTable } from './components/TeamDirectoryTable.jsx';
+import { TechnicianWorkloadView } from './components/TechnicianWorkloadView.jsx';
 
 export function ManageTeamPage() {
     const {
-        currentUser, users, loading, actionLoading, error, setError, success, setSuccess,
-        showForm, setShowForm, editingUser, setEditingUser,
-        name, setName, email, setEmail, role, setRole, specialty, setSpecialty, password, setPassword,
-        generateSecurePassword, resetForm, handleSubmitForm, handleEditClick, handleDeleteUser,
-    } = useManageTeam()
-    
+        currentUser,
+        users,
+        issues,
+        loading,
+        actionLoading,
+        error,
+        setError,
+        success,
+        setSuccess,
+        showForm,
+        setShowForm,
+        editingUser,
+        name,
+        setName,
+        email,
+        setEmail,
+        role,
+        setRole,
+        specialty,
+        setSpecialty,
+        password,
+        setPassword,
+        generateSecurePassword,
+        handleEditClick,
+        resetForm,
+        handleSubmitForm,
+        handleDeleteUser,
+    } = useManageTeam();
 
     return (
         <div id="manage-team-root" className="space-y-6">
@@ -22,7 +45,7 @@ export function ManageTeamPage() {
                         <Users className="w-6 h-6 text-indigo-600" />
                         <span>Staff & Team Directory</span>
                     </h1>
-
+                    
                     <p className="text-sm text-slate-500 mt-1">Manage team credentials, roles, and specialties for smart ticket dispatching.</p>
                 </div>
 
@@ -44,7 +67,6 @@ export function ManageTeamPage() {
                 </button>
             </div>
 
-
             {/* Global Alerts */}
             {error && (
                 <div className="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-xl text-sm flex items-start gap-3 animate-fade-in">
@@ -59,7 +81,6 @@ export function ManageTeamPage() {
                     <span>{success}</span>
                 </div>
             )}
-
 
             {/* Register/Edit user form */}
             {showForm && (
@@ -82,6 +103,12 @@ export function ManageTeamPage() {
                 />
             )}
 
+            {/* Technician Dispatch & Workload View */}
+            {!loading && (
+                <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-200/60 shadow-xs">
+                    <TechnicianWorkloadView users={users} issues={issues} />
+                </div>
+            )}
 
             {/* Directory list card */}
             <div className="bg-white border border-slate-200/95 rounded-2xl shadow-sm overflow-hidden">
