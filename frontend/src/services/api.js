@@ -1,4 +1,4 @@
-const API_BASE = '/api'
+const API_BASE = import.meta.env.VITE_API_URL || 'https://maintain-iq-final-hackathon.vercel.app/api';
 
 export async function request(endpoint, options = {}) {
     const token = localStorage.getItem('token');

@@ -16,7 +16,7 @@
 Welcome to my final hackathon project! I battled through the darkest depths of internet connectivity issues (seriously, the Wi-Fi was held together by duct tape and dreams) to bring you this beautiful, full-stack application.
 
 ## 🌟 Live Demo
-[✨ **Click here to see the magic!** ✨](YOUR_LIVE_LINK_HERE) *(Coming soon—our servers are currently taking a well-deserved nap!)*
+[✨ **Click here to see the magic!** ✨](https://maintain-iq-final-hackathon.vercel.app/) *(Live now!)*
 
 ---
 
