@@ -6,6 +6,9 @@ export function AssetCreationForm({
     setName,
     category,
     setCategory,
+    categories = [],
+    categoryLoading = false,
+    handleCreateCategory,
     location,
     setLocation,
     condition,
@@ -18,7 +21,7 @@ export function AssetCreationForm({
     return (
         <div className="max-w-3xl bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden transition-all hover:shadow-lg">
             {/* Visual Header Accent */}
-            <div className="bg-indigo-500 h-2 w-full" />
+            <div className="bg-indigo-500 via-purple-500 to-pink-500 h-2 w-full" />
 
             <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-8">
                 {error && (
@@ -70,13 +73,45 @@ export function AssetCreationForm({
                                     onChange={(e) => setCategory(e.target.value)}
                                     className="block w-full pl-10 pr-3.5 py-2.5 border border-slate-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-semibold text-slate-700"
                                 >
-                                    <option value="HVAC">HVAC</option>
-                                    <option value="Electrical">Electrical</option>
-                                    <option value="Plumbing">Plumbing</option>
-                                    <option value="Fire Safety">Fire Safety</option>
-                                    <option value="Machinery">Machinery</option>
-                                    <option value="IT Infrastructure">IT Infrastructure</option>
+                                    {categories.map((cat) => (
+                                        <option key={cat} value={cat}>
+                                            {cat}
+                                        </option>
+                                    ))}
                                 </select>
+                            </div>
+
+                            {/* Inline Custom Category Creator */}
+                            <div className="mt-3.5 bg-slate-50 border border-slate-200/60 p-3 rounded-xl flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Add new custom category..."
+                                    id="new-category-input"
+                                    className="flex-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            if (e.target.value) {
+                                                handleCreateCategory(e.target.value);
+                                                e.target.value = '';
+                                            }
+                                        }
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    disabled={categoryLoading}
+                                    onClick={() => {
+                                        const input = document.getElementById('new-category-input');
+                                        if (input && input.value) {
+                                            handleCreateCategory(input.value);
+                                            input.value = '';
+                                        }
+                                    }}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition-all disabled:opacity-50 cursor-pointer"
+                                >
+                                    {categoryLoading ? '...' : 'Add'}
+                                </button>
                             </div>
                         </div>
 
@@ -130,7 +165,6 @@ export function AssetCreationForm({
                     >
                         Cancel
                     </button>
-
                     <button
                         id="save-new-asset-btn"
                         type="submit"

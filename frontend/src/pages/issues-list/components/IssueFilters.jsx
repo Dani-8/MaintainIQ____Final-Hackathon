@@ -8,14 +8,18 @@ export function IssueFilters({
     setPriority,
     category,
     setCategory,
+    categories = [],
 }) {
+    const finalCategories = categories.length > 0
+        ? categories.map(c => typeof c === 'object' ? c.name : c)
+        : ["HVAC", "Electrical", "Plumbing", "Fire Safety", "Machinery", "IT Infrastructure"];
+
     return (
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm mb-6 flex flex-col md:flex-row md:items-center gap-4">
             <div className="flex items-center gap-2 text-slate-500 font-medium text-xs uppercase tracking-wider">
                 <Sliders className="w-4 h-4" />
                 <span>Filters:</span>
             </div>
-            
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
                 {/* Status filter */}
@@ -35,7 +39,6 @@ export function IssueFilters({
                     <option value="Reopened">Reopened</option>
                 </select>
 
-
                 {/* Priority filter */}
                 <select
                     value={priority}
@@ -49,7 +52,6 @@ export function IssueFilters({
                     <option value="critical">Critical</option>
                 </select>
 
-
                 {/* Category filter */}
                 <select
                     value={category}
@@ -57,12 +59,9 @@ export function IssueFilters({
                     className="block w-full py-2 px-3 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 >
                     <option value="">All Categories</option>
-                    <option value="HVAC">HVAC</option>
-                    <option value="Electrical">Electrical</option>
-                    <option value="Plumbing">Plumbing</option>
-                    <option value="Fire Safety">Fire Safety</option>
-                    <option value="Machinery">Machinery</option>
-                    <option value="IT Infrastructure">IT Infrastructure</option>
+                    {finalCategories.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                    ))}
                 </select>
             </div>
         </div>
